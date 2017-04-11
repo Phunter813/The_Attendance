@@ -10,15 +10,12 @@
 ```Python 3
 from selenium import webdriver
 
-user = input('put you username: ')
-passw = input('put you password: ')
-
-driver = webdriver.Chrome()   # change to .Firefox() if you have Mozilla
+driver = webdriver.Chrome()
 driver.get("http://erp.ncuindia.edu/Welcome_iie.aspx/Welcome_iie.aspx")
 username = driver.find_element_by_name('tbUserName')
-username.send_keys(user)                                         # you can put your ID directy here and in the passw section
-password = driver.find_element_by_name('tbPassword')             # and remove the first two lines of input
-password.send_keys(passw)       
+username.send_keys('your_id')    #your uername goes here
+password = driver.find_element_by_name('tbPassword')
+password.send_keys('Your_pass')   #your password goes here
 driver.find_element_by_name('btnLogIn').click()
 
 strings = driver.find_element_by_id('lblCourse').text
@@ -37,9 +34,6 @@ data = driver.find_element_by_css_selector(
     'table[class="table100 table f11 noHover marB10 borTop2pxSolid altBgTrLast altBgTdLast"]')
 main_contents = data.find_element_by_xpath(
     xpath='//*[@id="aspnetForm"]/div[3]/div/div/div[2]/div/div/section/div/div[2]/table/tbody')
-
-
-
 
 new = main_contents.text.split('\n')
 
@@ -67,6 +61,8 @@ for I in range(0, number_of_subjects):
     new[I].reverse()
 
 list_warnings = []
+
+
 def minimum_attendance(data):
     for L in range(0, number_of_subjects):
         percentage_diff = 70.00 - float(int(data[L][4]) / int(data[L][5]) * 100)
@@ -97,7 +93,7 @@ def minimum_attendance(data):
             if bunk >= 1:
                 if attendance >= 70:
                     print('You can leave {} lectures in {} and your attendance will be {:.2f}'.format(bunk, names[I],
-                                                                                                  attendance))
+                                                                                                      attendance))
                     print('____________________________________________________________________\n')
                 else:
                     bunk = bunk - 1
@@ -105,22 +101,28 @@ def minimum_attendance(data):
                         new_attendance = (int(data[I][4]) / (int(data[I][5]) + bunk)) * 100
                         print(
                             'You can leave {} lectures in {} and you attendance will be {:.2f}'.format(bunk, names[I],
-                                                                                                   new_attendance))
+                                                                                                       new_attendance))
                         print('____________________________________________________________________\n')
 
                     elif bunk == 0:
                         warning = {names[I]: attendance}
                         list_warnings.append(warning)
 
+            if bunk == 0 and attendance >= 70:
+                short = (1 / int(data[I][5])) * 100
+                attendance = attendance - short
+                warning = {names[I]: attendance}
+                list_warnings.append(warning)
 
         dead_atten = input('Do you want to see further Attendance warnings (Y/N)')
         if dead_atten == 'Y':
             for I in list_warnings:
                 for J in I:
-                    print('you attendance will be {:.2f} if you leave a lecture in {}'.format(I[J], J))
+                    print('Your attendance will be {:.2f} if you leave a lecture in {}'.format(I[J], J))
 
 
 minimum_attendance(new)
+
 ```
 And as always we need to run this file as a batch command for that 
 
